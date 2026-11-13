@@ -6,6 +6,8 @@
     <title>Yamen Al-Hasan | Web Developer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Lenis Smooth Scroll CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.20/dist/lenis.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap');
 
@@ -17,51 +19,23 @@
             --accent-2: #6366f1;
         }
 
-        html { scroll-behavior: smooth; }
-
         body {
             font-family: 'Cairo', sans-serif;
             background-color: var(--bg-dark);
             margin: 0;
             color: #e2e8f0;
             overflow-x: hidden;
-            cursor: none;
+            cursor: default;
             font-weight: 900;
         }
 
-        a, button, input, textarea { cursor: none; }
+        a, button { cursor: pointer; }
+        input, textarea { cursor: text; }
 
         h1, h2, h3, h4, h5, .display-font {
             font-family: 'Cairo', sans-serif;
             font-weight: 900;
             letter-spacing: -0.02em;
-        }
-
-        .cursor-dot {
-            position: fixed;
-            width: 8px; height: 8px;
-            background: #60a5fa;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 10000;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
-            transition: width 0.2s, height 0.2s, background 0.2s;
-        }
-        .cursor-outline {
-            position: fixed;
-            width: 40px; height: 40px;
-            border: 1.5px solid rgba(96, 165, 250, 0.5);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-            transition: width 0.3s ease, height 0.3s ease, border 0.3s ease, background 0.3s ease;
-        }
-        .cursor-outline.expand {
-            width: 70px; height: 70px;
-            background: rgba(59, 130, 246, 0.1);
-            border-color: transparent;
         }
 
         .interactive-bg {
@@ -73,7 +47,7 @@
                 radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(59,130,246,0.15), transparent 25%),
                 radial-gradient(circle at 20% 80%, rgba(99,102,241,0.1), transparent 30%),
                 #08080a;
-            transition: background 0.3s ease;
+            will-change: background;
         }
         
         .noise-overlay {
@@ -96,8 +70,8 @@
 
         .tilt-card {
             transform-style: preserve-3d;
-            transition: transform 0.2s ease-out;
             will-change: transform;
+            backface-visibility: hidden;
         }
         .tilt-content {
             transform: translateZ(40px);
@@ -115,8 +89,8 @@
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(16px); filter: blur(8px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+            from { opacity: 0; transform: translate3d(0, 16px, 0); filter: blur(8px); }
+            to { opacity: 1; transform: translate3d(0, 0, 0); filter: blur(0); }
         }
         .fade-in-up { animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 
@@ -127,30 +101,31 @@
         .build-line { width: 0; animation: sweepWidth .7s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 
         @keyframes cardRise {
-            from { opacity: 0; transform: translateY(18px) scale(.97); filter: blur(10px); }
-            to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+            from { opacity: 0; transform: translate3d(0, 18px, 0) scale(.97); filter: blur(10px); }
+            to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0); }
         }
         .card-rise { animation: cardRise .7s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 
         .exit-active {
-            transform: translateY(-100%);
+            transform: translate3d(0, -100%, 0);
             opacity: 0.98;
             transition: transform 1.05s cubic-bezier(0.82, 0, 0.12, 1), opacity .7s ease;
         }
 
         .hero-reveal {
             opacity: 0;
-            transform: translateY(28px) scale(.985);
+            transform: translate3d(0, 28px, 0) scale(.985);
             filter: blur(12px);
+            will-change: transform, opacity, filter;
             transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), filter 1.2s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .hero-reveal.active { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        .hero-reveal.active { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0); }
 
         @keyframes floatSlow {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
+            0%, 100% { transform: translate3d(0, 0px, 0); }
+            50% { transform: translate3d(0, -8px, 0); }
         }
-        .float-slow { animation: floatSlow 5s ease-in-out infinite; }
+        .float-slow { animation: floatSlow 5s ease-in-out infinite; will-change: transform; }
 
         .gradient-text {
             background: linear-gradient(90deg, #ffffff 0%, #cbd5e1 45%, #60a5fa 100%);
@@ -160,31 +135,164 @@
         }
 
         .magnetic-btn {
-            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: transform;
             display: inline-flex;
             align-items: center;
             justify-content: center;
         }
 
+        /* Smooth One-Way GPU Scroll Reveal */
         .scroll-reveal {
             opacity: 0;
-            transform: translateY(40px) scale(.98);
-            filter: blur(12px);
-            transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1), transform 1s cubic-bezier(0.22, 1, 0.36, 1), filter 1s cubic-bezier(0.22, 1, 0.36, 1);
-            will-change: opacity, transform, filter;
+            transform: translate3d(0, 32px, 0) scale(0.985);
+            transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: opacity, transform;
+            backface-visibility: hidden;
         }
         .scroll-reveal.active {
             opacity: 1;
-            transform: translateY(0) scale(1);
-            filter: blur(0);
+            transform: translate3d(0, 0, 0) scale(1);
         }
 
-        .floating-nav {
-            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
-            transform: translateY(-100px);
-            opacity: 0;
+        /* Centered Burger Trigger Pill */
+        .burger-trigger {
+            position: fixed;
+            top: 1.5rem;
+            left: 50%;
+            transform: translate3d(-50%, 0, 0);
+            z-index: 1200;
+            background: rgba(18, 18, 25, 0.72);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease, border-color 0.3s ease;
+            will-change: transform;
         }
-        .floating-nav.visible { transform: translateY(0); opacity: 1; }
+        .burger-trigger:hover {
+            border-color: rgba(96, 165, 250, 0.45);
+            background: rgba(24, 24, 34, 0.85);
+            transform: translate3d(-50%, 0, 0) scale(1.04);
+        }
+        .burger-trigger:active {
+            transform: translate3d(-50%, 0, 0) scale(0.94);
+        }
+
+        .burger-lines {
+            width: 20px;
+            height: 14px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .burger-lines span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background: #f8fafc;
+            border-radius: 99px;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+            transform-origin: center;
+        }
+        .burger-trigger.is-open .burger-lines span:nth-child(1) {
+            transform: translateY(6px) rotate(45deg);
+        }
+        .burger-trigger.is-open .burger-lines span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+        .burger-trigger.is-open .burger-lines span:nth-child(3) {
+            transform: translateY(-6px) rotate(-45deg);
+        }
+
+        /* iOS Lock Screen Passcode Overlay & Spring Bubbles */
+        .ios-menu-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1150;
+            background: rgba(6, 7, 12, 0.72);
+            backdrop-filter: blur(32px) saturate(160%);
+            -webkit-backdrop-filter: blur(32px) saturate(160%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: opacity;
+        }
+        .ios-menu-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .ios-bubble {
+            width: 108px;
+            height: 108px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1.5px solid rgba(255, 255, 255, 0.18);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.22), 0 14px 34px rgba(0, 0, 0, 0.45);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            color: #ffffff;
+            opacity: 0;
+            transform: scale(0.35) translate3d(0, 22px, 0);
+            transition:
+                transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
+                opacity 0.35s ease,
+                background 0.22s ease,
+                border-color 0.22s ease;
+            will-change: transform, opacity;
+            user-select: none;
+        }
+
+        @media (min-width: 640px) {
+            .ios-bubble {
+                width: 120px;
+                height: 120px;
+            }
+        }
+
+        .ios-menu-overlay.active .ios-bubble {
+            opacity: 1;
+            transform: scale(1) translate3d(0, 0, 0);
+        }
+
+        /* Staggered iOS Pop-in Delays */
+        .ios-menu-overlay.active .ios-bubble:nth-child(1) { transition-delay: 0.04s; }
+        .ios-menu-overlay.active .ios-bubble:nth-child(2) { transition-delay: 0.09s; }
+        .ios-menu-overlay.active .ios-bubble:nth-child(3) { transition-delay: 0.14s; }
+        .ios-menu-overlay.active .ios-bubble:nth-child(4) { transition-delay: 0.19s; }
+
+        /* Immediate Dismiss without Delay */
+        .ios-menu-overlay:not(.active) .ios-bubble {
+            transition-delay: 0s;
+            transition-duration: 0.28s;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .ios-menu-overlay.active .ios-bubble:hover {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(96, 165, 250, 0.65);
+            transform: scale(1.06) translate3d(0, 0, 0);
+            transition-delay: 0s;
+            transition-duration: 0.25s;
+        }
+
+        .ios-menu-overlay.active .ios-bubble:active {
+            background: rgba(255, 255, 255, 0.32);
+            transform: scale(0.9) translate3d(0, 0, 0);
+            transition-delay: 0s;
+            transition-duration: 0.1s;
+        }
 
         .bento-grid {
             display: grid;
@@ -213,11 +321,12 @@
         .marquee-track {
             display: flex;
             width: max-content;
+            will-change: transform;
             animation: marquee 30s linear infinite;
         }
         @keyframes marquee {
-            from { transform: translateX(0); }
-            to { transform: translateX(-50%); }
+            from { transform: translate3d(0, 0, 0); }
+            to { transform: translate3d(-50%, 0, 0); }
         }
         .marquee-item {
             font-family: 'Space Grotesk', sans-serif;
@@ -244,9 +353,6 @@
 
 <div class="interactive-bg"></div>
 <div class="noise-overlay"></div>
-
-<div class="cursor-dot"></div>
-<div class="cursor-outline"></div>
 
 <!-- Loading Screen -->
 <div id="intro-overlay" class="fixed inset-0 z-[9999] flex items-center justify-center bg-[#050507] overflow-hidden">
@@ -295,13 +401,50 @@
     </div>
 </div>
 
-<!-- Floating Navbar -->
-<nav id="navbar" class="floating-nav fixed top-6 left-1/2 -translate-x-1/4 z-[1000] glass rounded-full  md:px-8 py-3 flex items-center gap-4 md:gap-8">
-    <a href="#about" class="text-sm text-slate-300 hover:text-white transition-colors font-bold"><span data-ar="من أنا" data-en="About">من أنا</span></a>
-    <a href="#projects" class="text-sm text-slate-300 hover:text-white transition-colors font-bold"><span data-ar="أعمالي" data-en="Projects">أعمالي</span></a>
-    <a href="#contact" class="text-sm text-slate-300 hover:text-white transition-colors font-bold"><span data-ar="تواصل" data-en="Contact">تواصل</span></a>
-    <button id="lang-toggle" class="magnetic-btn px-4 py-1 rounded-full bg-white/5 border border-white/10 text-slate-200 hover:bg-blue-600 hover:border-transparent transition-colors font-bold text-sm">EN</button>
-</nav>
+<!-- Centered Burger Button -->
+<button id="burger-btn" class="burger-trigger rounded-full px-5 py-3 flex items-center gap-3" aria-label="Menu" aria-expanded="false">
+    <div class="burger-lines">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+    <span id="burger-label" class="text-xs tracking-wider text-slate-200 font-bold" data-ar="القائمة" data-en="MENU">القائمة</span>
+</button>
+
+<!-- iOS Lock-Screen Passcode Bubble Overlay -->
+<div id="ios-menu" class="ios-menu-overlay" aria-hidden="true">
+    <div class="text-center mb-9 px-4">
+        <span class="text-xs uppercase tracking-[0.25em] text-blue-400/90 code-font block mb-2">YAMEN AL-HASAN</span>
+        <p class="text-sm text-slate-300 font-bold" data-ar="اختر وجهتك" data-en="Select Destination">اختر وجهتك</p>
+    </div>
+
+    <!-- Passcode-style Circular Glass Bubbles Grid -->
+    <div class="grid grid-cols-2 gap-6 sm:gap-8 place-items-center" dir="ltr">
+        <a href="#about" class="ios-bubble ios-nav-link">
+            <span class="text-[11px] text-blue-400 code-font tracking-widest">01</span>
+            <span class="text-base sm:text-lg font-extrabold text-white" data-ar="من أنا" data-en="About">من أنا</span>
+            <span class="text-[10px] text-slate-400 code-font tracking-wider">ABOUT</span>
+        </a>
+
+        <a href="#projects" class="ios-bubble ios-nav-link">
+            <span class="text-[11px] text-blue-400 code-font tracking-widest">02</span>
+            <span class="text-base sm:text-lg font-extrabold text-white" data-ar="أعمالي" data-en="Projects">أعمالي</span>
+            <span class="text-[10px] text-slate-400 code-font tracking-wider">WORK</span>
+        </a>
+
+        <a href="#contact" class="ios-bubble ios-nav-link">
+            <span class="text-[11px] text-blue-400 code-font tracking-widest">03</span>
+            <span class="text-base sm:text-lg font-extrabold text-white" data-ar="تواصل" data-en="Contact">تواصل</span>
+            <span class="text-[10px] text-slate-400 code-font tracking-wider">CONTACT</span>
+        </a>
+
+        <button id="lang-toggle" type="button" class="ios-bubble">
+            <span class="text-[11px] text-blue-400 code-font tracking-widest">LANG</span>
+            <span id="lang-bubble-main" class="text-xl sm:text-2xl font-extrabold text-white">EN</span>
+            <span id="lang-bubble-sub" class="text-[10px] text-slate-400 code-font tracking-wider">ENGLISH</span>
+        </button>
+    </div>
+</div>
 
 <!-- Hero Section -->
 <section id="hero" class="relative min-h-screen overflow-hidden flex items-center">
@@ -451,7 +594,7 @@
                         <span class="text-xs px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300 font-bold">Tailwind</span>
                         <span class="text-xs px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300 font-bold">UI/UX</span>
                     </div>
-                    <a href="https://al-wala.onrender.com" target="_blank" class="magnetic-btn inline-flex w-full h-12 rounded-xl bg-white/5 hover:bg-red-600 text-white items-center justify-center transition-colors font-bold">
+                    <a href="https://al-wala.onrender.com" target="_blank" class="inline-flex w-full h-12 rounded-xl bg-white/5 hover:bg-red-600 text-white items-center justify-center transition-colors font-bold">
                         <span data-ar="زيارة الموقع" data-en="Visit Website">زيارة الموقع</span> <i class="fas fa-arrow-right text-xs ms-2 arrow-forward"></i>
                     </a>
                 </div>
@@ -472,7 +615,7 @@
                         <span class="text-xs px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300 font-bold">Tailwind</span>
                         <span class="text-xs px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300 font-bold">Responsive</span>
                     </div>
-                    <a href="https://saud-saad-al-harbi.onrender.com" target="_blank" class="magnetic-btn inline-flex w-full h-12 rounded-xl bg-white/5 hover:bg-emerald-600 text-white items-center justify-center transition-colors font-bold">
+                    <a href="https://saud-saad-al-harbi.onrender.com" target="_blank" class="inline-flex w-full h-12 rounded-xl bg-white/5 hover:bg-emerald-600 text-white items-center justify-center transition-colors font-bold">
                         <span data-ar="زيارة الموقع" data-en="Visit Website">زيارة الموقع</span> <i class="fas fa-arrow-right text-xs ms-2 arrow-forward"></i>
                     </a>
                 </div>
@@ -494,7 +637,7 @@
                         <span class="text-xs px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300 font-bold">SVG</span>
                         <span class="text-xs px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300 font-bold">GSAP</span>
                     </div>
-                    <a href="https://pizza-pino.onrender.com" target="_blank" class="magnetic-btn inline-flex w-full h-12 rounded-xl bg-white/5 hover:bg-orange-600 text-white items-center justify-center transition-colors font-bold">
+                    <a href="https://pizza-pino.onrender.com" target="_blank" class="inline-flex w-full h-12 rounded-xl bg-white/5 hover:bg-orange-600 text-white items-center justify-center transition-colors font-bold">
                         <span data-ar="زيارة الموقع" data-en="Visit Website">زيارة الموقع</span> <i class="fas fa-arrow-right text-xs ms-2 arrow-forward"></i>
                     </a>
                 </div>
@@ -518,7 +661,7 @@
         </div>
 
         <div class="scroll-reveal grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <a href="mailto:tira.developer@gmail.com" class="magnetic-btn glass rounded-2xl p-8 flex flex-col items-center gap-4 hover:border-blue-500/40 transition-all">
+            <a href="mailto:tira.developer@gmail.com" class="glass rounded-2xl p-8 flex flex-col items-center gap-4 hover:border-blue-500/40 transition-colors">
                 <div class="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 text-2xl"><i class="fas fa-envelope"></i></div>
                 <div class="text-start w-full">
                     <div class="text-xs text-slate-500 mb-1 font-bold" data-ar="البريد الإلكتروني" data-en="Email Address">البريد الإلكتروني</div>
@@ -526,7 +669,7 @@
                 </div>
             </a>
             
-            <a href="https://t.me/qcz_f" target="_blank" class="magnetic-btn glass rounded-2xl p-8 flex flex-col items-center gap-4 hover:border-blue-500/40 transition-all">
+            <a href="https://t.me/qcz_f" target="_blank" class="glass rounded-2xl p-8 flex flex-col items-center gap-4 hover:border-blue-500/40 transition-colors">
                 <div class="w-14 h-14 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 text-2xl"><i class="fab fa-telegram-plane"></i></div>
                 <div class="text-start w-full">
                     <div class="text-xs text-slate-500 mb-1 font-bold" data-ar="تيليجرام" data-en="Telegram">تيليجرام</div>
@@ -534,7 +677,7 @@
                 </div>
             </a>
 
-            <a href="tel:0535323718" class="magnetic-btn glass rounded-2xl p-8 flex flex-col items-center gap-4 hover:border-blue-500/40 transition-all">
+            <a href="tel:0535323718" class="glass rounded-2xl p-8 flex flex-col items-center gap-4 hover:border-blue-500/40 transition-colors">
                 <div class="w-14 h-14 rounded-2xl bg-sky-500/10 flex items-center justify-center text-sky-400 text-2xl"><i class="fas fa-phone-alt"></i></div>
                 <div class="text-start w-full">
                     <div class="text-xs text-slate-500 mb-1 font-bold" data-ar="الهاتف" data-en="Phone">الهاتف</div>
@@ -555,64 +698,89 @@
     </div>
 </footer>
 
+<!-- Lenis Smooth Scroll Library -->
+<script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+
 <script>
     // ==========================================
-    // 1. Custom Cursor
+    // 0. Ultra-Smooth Lenis Inertia Scroll (60/120fps)
     // ==========================================
-    const dot = document.querySelector('.cursor-dot');
-    const outline = document.querySelector('.cursor-outline');
+    let lenisInstance = null;
 
+    function initLenisScroll() {
+        if (typeof Lenis === 'undefined') return;
+
+        lenisInstance = new Lenis({
+            duration: 1.15,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smoothWheel: true,
+            wheelMultiplier: 1.0,
+            touchMultiplier: 1.5
+        });
+
+        // Pause scrolling during initial intro screen
+        lenisInstance.stop();
+    }
+
+    function masterRaf(time) {
+        if (lenisInstance) {
+            lenisInstance.raf(time);
+        }
+        requestAnimationFrame(masterRaf);
+    }
+
+    // ==========================================
+    // 1. Ambient Background Glow (Normal System Cursor)
+    // ==========================================
     document.addEventListener('mousemove', (e) => {
-        dot.style.left = e.clientX + 'px';
-        dot.style.top = e.clientY + 'px';
-        
-        setTimeout(() => {
-            outline.style.left = e.clientX + 'px';
-            outline.style.top = e.clientY + 'px';
-        }, 80);
-
         const mouseX = (e.clientX / window.innerWidth) * 100;
         const mouseY = (e.clientY / window.innerHeight) * 100;
         document.documentElement.style.setProperty('--mouse-x', mouseX + '%');
         document.documentElement.style.setProperty('--mouse-y', mouseY + '%');
-    });
-
-    document.querySelectorAll('a, button, .tilt-card').forEach(el => {
-        el.addEventListener('mouseenter', () => outline.classList.add('expand'));
-        el.addEventListener('mouseleave', () => outline.classList.remove('expand'));
-    });
+    }, { passive: true });
 
     // ==========================================
-    // 2. Magnetic Buttons
+    // 2. Magnetic Hero Buttons Only
     // ==========================================
     document.querySelectorAll('.magnetic-btn').forEach(btn => {
         btn.addEventListener('mousemove', (e) => {
             const rect = btn.getBoundingClientRect();
             const x = e.clientX - rect.left - rect.width / 2;
             const y = e.clientY - rect.top - rect.height / 2;
-            btn.style.transform = `translate(${x * 0.2}px, ${y * 0.3}px)`;
+            btn.style.transition = 'transform 0.12s ease-out';
+            btn.style.transform = `translate3d(${x * 0.2}px, ${y * 0.3}px, 0)`;
         });
         btn.addEventListener('mouseleave', () => {
-            btn.style.transform = 'translate(0px, 0px)';
+            btn.style.transition = 'transform 0.45s cubic-bezier(0.22, 1, 0.36, 1)';
+            btn.style.transform = 'translate3d(0px, 0px, 0)';
         });
     });
 
     // ==========================================
-    // 3. 3D Tilt Effect
+    // 3. GPU 3D Tilt Effect (Card tilts as one rigid unit)
     // ==========================================
     document.querySelectorAll('[data-tilt]').forEach(card => {
+        let tiltRafId = null;
+
         card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = (y - centerY) / 15;
-            const rotateY = (centerX - x) / 15;
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+            if (tiltRafId) cancelAnimationFrame(tiltRafId);
+            tiltRafId = requestAnimationFrame(() => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 15;
+                const rotateY = (centerX - x) / 15;
+                card.style.transition = 'transform 0.1s ease-out';
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1)`;
+            });
         });
+
         card.addEventListener('mouseleave', () => {
-            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+            if (tiltRafId) cancelAnimationFrame(tiltRafId);
+            card.style.transition = 'transform 0.55s cubic-bezier(0.22, 1, 0.36, 1)';
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
         });
     });
 
@@ -642,7 +810,7 @@
             codeArea.appendChild(lineDiv);
             await wait(40);
             lineDiv.style.opacity = '1';
-            lineDiv.style.transform = 'translateY(0)';
+            lineDiv.style.transform = 'translate3d(0, 0, 0)';
             lineDiv.style.transition = 'opacity .25s ease, transform .25s ease';
             for (const char of line.text) {
                 lineDiv.textContent += char;
@@ -657,7 +825,7 @@
     async function transformToUI() {
         codeArea.style.transition = 'opacity .45s ease, transform .45s ease, filter .45s ease';
         codeArea.style.opacity = '0';
-        codeArea.style.transform = 'scale(.985) translateY(8px)';
+        codeArea.style.transform = 'scale(.985) translate3d(0, 8px, 0)';
         codeArea.style.filter = 'blur(8px)';
         await wait(400);
         codeArea.classList.add('hidden');
@@ -680,6 +848,7 @@
         introOverlay.classList.add('exit-active');
         setTimeout(() => {
             document.body.style.overflow = 'auto';
+            if (lenisInstance) lenisInstance.start();
             heroContent.classList.add('active');
         }, 600);
         setTimeout(() => introOverlay.style.display = 'none', 1000);
@@ -687,32 +856,93 @@
 
     window.addEventListener('load', () => {
         document.body.style.overflow = 'hidden';
+        initLenisScroll();
+        requestAnimationFrame(masterRaf);
         setTimeout(typeCode, 300);
     });
 
     // ==========================================
-    // 5. Scroll Reveal
+    // 5. Smooth One-Way Scroll Reveal
     // ==========================================
-    const observerOptions = { threshold: 0.1 };
-    const revealObserver = new IntersectionObserver((entries) => {
+    const observerOptions = { threshold: 0.12, rootMargin: '0px 0px -30px 0px' };
+    const revealObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach((entry) => {
-            const target = entry.target;
             if (entry.isIntersecting) {
-                target.classList.add('active');
-            } else {
-                target.classList.remove('active');
+                entry.target.classList.add('active');
+                observer.unobserve(entry.target);
             }
         });
     }, observerOptions);
     document.querySelectorAll('.scroll-reveal').forEach(el => revealObserver.observe(el));
 
     // ==========================================
-    // 6. Navbar
+    // 6. Centered Burger Menu & iOS Passcode Bubbles
     // ==========================================
-    const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 500) navbar.classList.add('visible');
-        else navbar.classList.remove('visible');
+    const burgerBtn = document.getElementById('burger-btn');
+    const iosMenu = document.getElementById('ios-menu');
+    const burgerLabel = document.getElementById('burger-label');
+    let isMenuOpen = false;
+
+    function openIosMenu() {
+        isMenuOpen = true;
+        burgerBtn.classList.add('is-open');
+        burgerBtn.setAttribute('aria-expanded', 'true');
+        iosMenu.classList.add('active');
+        iosMenu.setAttribute('aria-hidden', 'false');
+        burgerLabel.textContent = (currentLang === 'ar') ? 'إغلاق' : 'CLOSE';
+        if (lenisInstance) lenisInstance.stop();
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeIosMenu() {
+        isMenuOpen = false;
+        burgerBtn.classList.remove('is-open');
+        burgerBtn.setAttribute('aria-expanded', 'false');
+        iosMenu.classList.remove('active');
+        iosMenu.setAttribute('aria-hidden', 'true');
+        burgerLabel.textContent = (currentLang === 'ar') ? 'القائمة' : 'MENU';
+        document.body.style.overflow = 'auto';
+        if (lenisInstance) lenisInstance.start();
+    }
+
+    burgerBtn.addEventListener('click', () => {
+        if (isMenuOpen) closeIosMenu();
+        else openIosMenu();
+    });
+
+    // Close menu when clicking backdrop outside bubbles
+    iosMenu.addEventListener('click', (e) => {
+        if (e.target === iosMenu) {
+            closeIosMenu();
+        }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && isMenuOpen) closeIosMenu();
+    });
+
+    // Smooth Anchor Navigation (from iOS bubbles and Back to Top)
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const targetId = this.getAttribute('href');
+            if (targetId && targetId.length > 1) {
+                const targetEl = document.querySelector(targetId);
+                if (targetEl) {
+                    e.preventDefault();
+                    if (isMenuOpen) {
+                        closeIosMenu();
+                        setTimeout(() => {
+                            if (lenisInstance) lenisInstance.scrollTo(targetEl, { offset: -20, duration: 1.25 });
+                            else targetEl.scrollIntoView({ behavior: 'smooth' });
+                        }, 180);
+                    } else {
+                        if (lenisInstance) lenisInstance.scrollTo(targetEl, { offset: -20, duration: 1.25 });
+                        else targetEl.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            }
+        });
     });
 
     // ==========================================
@@ -730,10 +960,20 @@
                 el.textContent = el.getAttribute('data-' + currentLang);
             }
         });
-        
-        const toggleBtn = document.getElementById('lang-toggle');
-        if (toggleBtn) {
-            toggleBtn.textContent = (currentLang === 'ar') ? 'EN' : 'ع';
+
+        const langMain = document.getElementById('lang-bubble-main');
+        const langSub = document.getElementById('lang-bubble-sub');
+        if (langMain && langSub) {
+            langMain.textContent = (currentLang === 'ar') ? 'EN' : 'ع';
+            langSub.textContent = (currentLang === 'ar') ? 'ENGLISH' : 'العربية';
+        }
+
+        if (burgerLabel) {
+            if (isMenuOpen) {
+                burgerLabel.textContent = (currentLang === 'ar') ? 'إغلاق' : 'CLOSE';
+            } else {
+                burgerLabel.textContent = (currentLang === 'ar') ? 'القائمة' : 'MENU';
+            }
         }
     }
 
